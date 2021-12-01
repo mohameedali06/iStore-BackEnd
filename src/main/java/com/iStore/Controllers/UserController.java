@@ -2,6 +2,7 @@ package com.iStore.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iStore.Entity.Cart;
 import com.iStore.Entity.OrderDetails;
 import com.iStore.Entity.Orders;
+import com.iStore.Entity.User;
 import com.iStore.Repository.CartRepo;
 import com.iStore.Repository.OrderDetailsRepo;
 import com.iStore.Repository.OrdersRepo;
@@ -37,6 +39,17 @@ public class UserController {
 	@Autowired
 	OrderDetailsRepo ordetrepo;
 
+	@GetMapping("")
+	public Optional<User> getProfile(@PathVariable int userId) {
+		return userrepo.findById(userId);
+	}
+
+	@PostMapping("")
+	public User setProfile(User user) {
+		userrepo.save(user);
+		return user;
+	}
+
 	@GetMapping("/cart")
 	public List<Cart> getAllFromCart(@PathVariable int userId) {
 		return cartrepo.findAllByUserId(userId);
@@ -57,11 +70,11 @@ public class UserController {
 	public void deleteFromCart(@PathVariable int userId, @PathVariable int cartId) {
 		cartrepo.deleteById(cartId);
 	}
-	
+
 	@DeleteMapping("/cart")
 	public void deleteFromCart(@PathVariable int userId) {
 		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
-		for(int i=0 ;i<cartlist.size();i++) {
+		for (int i = 0; i < cartlist.size(); i++) {
 			cartrepo.deleteById(cartlist.get(i).getCartId());
 		}
 	}
