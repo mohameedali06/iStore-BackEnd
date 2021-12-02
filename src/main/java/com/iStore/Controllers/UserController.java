@@ -2,7 +2,6 @@ package com.iStore.Controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,8 +39,8 @@ public class UserController {
 	OrderDetailsRepo ordetrepo;
 
 	@GetMapping("")
-	public Optional<User> getProfile(@PathVariable int userId) {
-		return userrepo.findById(userId);
+	public User getProfile(@PathVariable int userId) {
+		return userrepo.findById(userId).orElse(new User());
 	}
 
 	@PostMapping("")

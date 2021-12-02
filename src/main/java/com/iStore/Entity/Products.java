@@ -13,7 +13,11 @@ public class Products {
 	private String productName;
 	private double productPrice;
 	private String productDesc;
-	private String productImgSrc;
+	private String productImgSrc1;
+	private String productImgSrc2;
+	private String productImgSrc3;
+	private String productImgSrc4;
+	private String productImgSrc5;
 
 	public int getProductId() {
 		return productId;
@@ -47,18 +51,54 @@ public class Products {
 		this.productDesc = productDesc;
 	}
 
-	public String getProductImgSrc() {
-		return productImgSrc;
+	public String getProductImgSrc1() {
+		return productImgSrc1;
 	}
 
-	public void setProductImgSrc(String productImgSrc) {
-		this.productImgSrc = productImgSrc;
+	public void setProductImgSrc1(String productImgSrc1) {
+		this.productImgSrc1 = productImgSrc1;
+	}
+
+	public String getProductImgSrc2() {
+		return productImgSrc2;
+	}
+
+	public void setProductImgSrc2(String productImgSrc2) {
+		this.productImgSrc2 = productImgSrc2;
+	}
+
+	public String getProductImgSrc3() {
+		return productImgSrc3;
+	}
+
+	public void setProductImgSrc3(String productImgSrc3) {
+		this.productImgSrc3 = productImgSrc3;
+	}
+
+	public String getProductImgSrc4() {
+		return productImgSrc4;
+	}
+
+	public void setProductImgSrc4(String productImgSrc4) {
+		this.productImgSrc4 = productImgSrc4;
+	}
+
+	public String getProductImgSrc5() {
+		return productImgSrc5;
+	}
+
+	public void setProductImgSrc5(String productImgSrc5) {
+		this.productImgSrc5 = productImgSrc5;
 	}
 
 	@Override
 	public String toString() {
 		return "Products [productId=" + productId + ", productName=" + productName + ", productPrice=" + productPrice
-				+ ", productDesc=" + productDesc + ", productImgSrc=" + productImgSrc + "]";
+				+ ", productDesc=" + productDesc + ", productImgSrc1=" + productImgSrc1 + ", productImgSrc2="
+				+ productImgSrc2 + ", productImgSrc3=" + productImgSrc3 + ", productImgSrc4=" + productImgSrc4
+				+ ", productImgSrc5=" + productImgSrc5 + "]";
 	}
+
+	
 
 }

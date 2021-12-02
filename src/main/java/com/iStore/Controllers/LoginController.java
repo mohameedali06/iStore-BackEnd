@@ -31,8 +31,12 @@ public class LoginController {
 			return user;
 		}
 		return new User();
-	}
-	
-	
-	
+	}	
+//	@PostMapping("/user")
+//	public ResponseEntity<User> createUser(@Valid @RequestBody User user)     
+//	{  
+//	User savedUser=userrepo.save(user);    
+//	URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getUserId()).toUri();  
+//	return ResponseEntity.created(location).build();  
+//	}  
 }
