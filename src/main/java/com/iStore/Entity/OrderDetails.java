@@ -3,8 +3,6 @@ package com.iStore.Entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @Entity
 public class OrderDetails {
@@ -14,6 +12,7 @@ public class OrderDetails {
 	private int id;
 	private int orderId;
 	private int productId;
+	private int productNos;
 
 	public int getId() {
 		return id;
@@ -39,9 +38,18 @@ public class OrderDetails {
 		this.productId = productId;
 	}
 
-	@Override
-	public String toString() {
-		return "OrderDetails [id=" + id + ", orderId=" + orderId + ", productId=" + productId + "]";
+	public int getProductNos() {
+		return productNos;
 	}
 
+	public void setProductNos(int productNos) {
+		this.productNos = productNos;
+	}
+
+	@Override
+	public String toString() {
+		return "OrderDetails [id=" + id + ", orderId=" + orderId + ", productId=" + productId + ", productNos="
+				+ productNos + "]";
+	}
+	
 }

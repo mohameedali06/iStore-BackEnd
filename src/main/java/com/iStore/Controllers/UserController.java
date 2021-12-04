@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iStore.Entity.Cart;
 import com.iStore.Entity.OrderDetails;
 import com.iStore.Entity.Orders;
+import com.iStore.Entity.Products;
 import com.iStore.Entity.User;
 import com.iStore.Repository.CartRepo;
 import com.iStore.Repository.OrderDetailsRepo;
@@ -50,8 +52,27 @@ public class UserController {
 	}
 
 	@GetMapping("/cart")
-	public List<Cart> getAllFromCart(@PathVariable int userId) {
-		return cartrepo.findAllByUserId(userId);
+	public List<Products> getAllFromCart(@PathVariable int userId) {
+		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+		List<Products> productlist = new ArrayList<>();
+		for (int i = 0; i < cartlist.size(); i++) {
+			Cart cart = cartlist.get(i);
+			Products products = prodrepo.findById(cart.getProdId()).orElse(null);
+			products.setProductNos(cart.getProductNos());
+			productlist.add(products);
+		}
+		return productlist;
+	}
+	
+	@GetMapping("/cart/{productId}")
+	public boolean isInCart(@PathVariable int userId, @PathVariable int productId) {
+		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+		for(int i=0;i<cartlist.size();i++) {
+			if(productId == cartlist.get(i).getProdId()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@PostMapping("/cart/{productId}")
@@ -60,6 +81,7 @@ public class UserController {
 		Cart cart = new Cart();
 		cart.setProdId(productId);
 		cart.setUserId(userId);
+		cart.setProductNos(1);
 		cartrepo.save(cart);
 		return cart;
 
@@ -79,29 +101,34 @@ public class UserController {
 	}
 
 	@GetMapping("/orders")
-	public List<OrderDetails> getAllFromOrders(@PathVariable int userId) {
+	public List<Products> getAllFromOrders(@PathVariable int userId) {
 		List<Orders> orderlist = ordersrepo.findAllByUserId(userId);
-		List<OrderDetails> orderdetaillist = new ArrayList<OrderDetails>();
+		List<Products> productslist = new ArrayList<Products>();
 		for (int i = 0; i < orderlist.size(); i++) {
-			// Orders orders = orderlist.get(i);
-			// OrderDetails orderdetails = ordetrepo.findByOrders(orders);
-			// orderdetaillist.add(orderdetails);
-			orderdetaillist.add(ordetrepo.findByOrderId(orderlist.get(i).getOrderId()));
+			int id = orderlist.get(i).getOrderId();
+			List<OrderDetails> orderdetails = ordetrepo.findAllByOrderId(id);
+			for (int j = 0; j < orderdetails.size(); j++) {
+				Products product = prodrepo.findById((orderdetails.get(j)).getProductId()).orElse(null); 
+				product.setProductNos((orderdetails.get(j)).getProductNos());
+				productslist.add(product);
+				System.out.println(productslist);
+			}
 		}
-		return orderdetaillist;
+		System.out.println(productslist);
+		return productslist;
 	}
 
 	@PostMapping("/orders")
-	public void addToOrders(@PathVariable int userId) {
-		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+	public void addToOrders(@PathVariable int userId, @RequestBody List<Products> products) {
 		Orders orders = new Orders();
 		orders.setUserId(userId);
 		ordersrepo.save(orders);
 		int id = orders.getOrderId();
-		for (int i = 0; i < cartlist.size(); i++) {
+		for (int i = 0; i < products.size(); i++) {
 			OrderDetails orderdetails = new OrderDetails();
 			orderdetails.setOrderId(id);
-			orderdetails.setProductId(cartlist.get(i).getProdId());
+			orderdetails.setProductId(products.get(i).getProductId());
+			orderdetails.setProductNos(products.get(i).getProductNos());
 			ordetrepo.save(orderdetails);
 		}
 	}

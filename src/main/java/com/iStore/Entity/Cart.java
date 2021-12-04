@@ -12,6 +12,7 @@ public class Cart {
 	private int cartId;
 	private int prodId;
 	private int userId;
+	private int productNos;
 
 	public int getCartId() {
 		return cartId;
@@ -37,9 +38,12 @@ public class Cart {
 		this.userId = userId;
 	}
 
-	@Override
-	public String toString() {
-		return "Cart [cartId=" + cartId + ", prodId=" + prodId + ", userId=" + userId + "]";
+	public int getProductNos() {
+		return productNos;
+	}
+
+	public void setProductNos(int productNos) {
+		this.productNos = productNos;
 	}
 
 }
