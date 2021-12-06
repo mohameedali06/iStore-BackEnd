@@ -1,6 +1,7 @@
 package com.iStore.Controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class UserController {
 	}
 
 	@PostMapping("")
-	public User setProfile(User user) {
+	public User setProfile(@RequestBody User user) {
 		userrepo.save(user);
 		return user;
 	}
@@ -63,12 +64,12 @@ public class UserController {
 		}
 		return productlist;
 	}
-	
+
 	@GetMapping("/cart/{productId}")
 	public boolean isInCart(@PathVariable int userId, @PathVariable int productId) {
 		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
-		for(int i=0;i<cartlist.size();i++) {
-			if(productId == cartlist.get(i).getProdId()) {
+		for (int i = 0; i < cartlist.size(); i++) {
+			if (productId == cartlist.get(i).getProdId()) {
 				return true;
 			}
 		}
@@ -87,9 +88,16 @@ public class UserController {
 
 	}
 
-	@DeleteMapping("/cart/{cartId}")
-	public void deleteFromCart(@PathVariable int userId, @PathVariable int cartId) {
-		cartrepo.deleteById(cartId);
+	@DeleteMapping("/cart/{productId}")
+	public void deleteFromCart(@PathVariable int userId, @PathVariable int productId) {
+		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+		for (int i = 0; i < cartlist.size(); i++) {
+			int prodId = cartlist.get(i).getProdId();
+			if (prodId == productId) {
+				cartrepo.deleteById(cartlist.get(i).getCartId());
+				break;
+			}
+		}
 	}
 
 	@DeleteMapping("/cart")
@@ -100,21 +108,36 @@ public class UserController {
 		}
 	}
 
+//	@GetMapping("/orders")
+//	public List<Products> getAllFromOrders(@PathVariable int userId) {
+//		List<Orders> orderlist = ordersrepo.findAllByUserId(userId);
+//		List<Products> productslist = new ArrayList<Products>();
+//		for (int i = 0; i < orderlist.size(); i++) {
+//			int id = orderlist.get(i).getOrderId();
+//			List<OrderDetails> orderdetails = ordetrepo.findAllByOrderId(id);
+//			for (int j = 0; j < orderdetails.size(); j++) {
+//				Products product = prodrepo.findById((orderdetails.get(j)).getProductId()).orElse(null); 
+//				product.setProductNos((orderdetails.get(j)).getProductNos());
+//				productslist.add(product);
+//			}
+//		}
+//		return productslist;
+//	}
+
 	@GetMapping("/orders")
-	public List<Products> getAllFromOrders(@PathVariable int userId) {
-		List<Orders> orderlist = ordersrepo.findAllByUserId(userId);
+	public List<Orders> getAllOrder(@PathVariable int userId) {
+		return ordersrepo.findAllByUserIdOrderByOrderIdDesc(userId);
+	}
+
+	@GetMapping("/orders/{orderId}")
+	public List<Products> getAllProductsofOrder(@PathVariable int userId, @PathVariable int orderId) {
 		List<Products> productslist = new ArrayList<Products>();
-		for (int i = 0; i < orderlist.size(); i++) {
-			int id = orderlist.get(i).getOrderId();
-			List<OrderDetails> orderdetails = ordetrepo.findAllByOrderId(id);
-			for (int j = 0; j < orderdetails.size(); j++) {
-				Products product = prodrepo.findById((orderdetails.get(j)).getProductId()).orElse(null); 
-				product.setProductNos((orderdetails.get(j)).getProductNos());
-				productslist.add(product);
-				System.out.println(productslist);
-			}
+		List<OrderDetails> orderdetails = ordetrepo.findAllByOrderId(orderId);
+		for (int j = 0; j < orderdetails.size(); j++) {
+			Products product = prodrepo.findById((orderdetails.get(j)).getProductId()).orElse(null);
+			product.setProductNos((orderdetails.get(j)).getProductNos());
+			productslist.add(product);
 		}
-		System.out.println(productslist);
 		return productslist;
 	}
 
