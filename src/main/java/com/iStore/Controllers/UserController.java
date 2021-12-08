@@ -1,7 +1,6 @@
 package com.iStore.Controllers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,6 +76,20 @@ public class UserController {
 		return false;
 	}
 
+	@PutMapping("/cart")
+	public void updateCart(@PathVariable int userId, @RequestBody List<Products> productlist) {
+		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+		for (int i = 0; i < cartlist.size(); i++) {
+			for (int j = 0; j < productlist.size(); j++) {
+				if (cartlist.get(i).getProdId() == productlist.get(j).getProductId()) {
+					cartlist.get(i).setProductNos(productlist.get(j).getProductNos());
+					cartrepo.save(cartlist.get(i));
+					break;
+				}
+			}
+		}
+	}
+
 	@PostMapping("/cart/{productId}")
 	public Cart addToCart(@PathVariable int userId, @PathVariable int productId) {
 
@@ -108,22 +122,6 @@ public class UserController {
 		}
 	}
 
-//	@GetMapping("/orders")
-//	public List<Products> getAllFromOrders(@PathVariable int userId) {
-//		List<Orders> orderlist = ordersrepo.findAllByUserId(userId);
-//		List<Products> productslist = new ArrayList<Products>();
-//		for (int i = 0; i < orderlist.size(); i++) {
-//			int id = orderlist.get(i).getOrderId();
-//			List<OrderDetails> orderdetails = ordetrepo.findAllByOrderId(id);
-//			for (int j = 0; j < orderdetails.size(); j++) {
-//				Products product = prodrepo.findById((orderdetails.get(j)).getProductId()).orElse(null); 
-//				product.setProductNos((orderdetails.get(j)).getProductNos());
-//				productslist.add(product);
-//			}
-//		}
-//		return productslist;
-//	}
-
 	@GetMapping("/orders")
 	public List<Orders> getAllOrder(@PathVariable int userId) {
 		return ordersrepo.findAllByUserIdOrderByOrderIdDesc(userId);
@@ -142,16 +140,17 @@ public class UserController {
 	}
 
 	@PostMapping("/orders")
-	public void addToOrders(@PathVariable int userId, @RequestBody List<Products> products) {
+	public void addToOrders(@PathVariable int userId) {
 		Orders orders = new Orders();
 		orders.setUserId(userId);
 		ordersrepo.save(orders);
 		int id = orders.getOrderId();
-		for (int i = 0; i < products.size(); i++) {
+		List<Cart> cartlist = cartrepo.findAllByUserId(userId);
+		for (int i = 0; i < cartlist.size(); i++) {
 			OrderDetails orderdetails = new OrderDetails();
 			orderdetails.setOrderId(id);
-			orderdetails.setProductId(products.get(i).getProductId());
-			orderdetails.setProductNos(products.get(i).getProductNos());
+			orderdetails.setProductId(cartlist.get(i).getProdId());
+			orderdetails.setProductNos(cartlist.get(i).getProductNos());
 			ordetrepo.save(orderdetails);
 		}
 	}

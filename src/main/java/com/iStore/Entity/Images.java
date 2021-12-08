@@ -64,4 +64,10 @@ public class Images {
 		this.imgSrc5 = imgSrc5;
 	}
 
+	@Override
+	public String toString() {
+		return "Images [imgId=" + imgId + ", imgSrc1=" + imgSrc1 + ", imgSrc2=" + imgSrc2 + ", imgSrc3=" + imgSrc3
+				+ ", imgSrc4=" + imgSrc4 + ", imgSrc5=" + imgSrc5 + "]";
+	}
+	
 }

@@ -12,21 +12,21 @@ import com.iStore.Repository.UserRepo;
 @CrossOrigin
 @RestController
 public class LoginController {
-	
+
 	@Autowired
 	UserRepo userrepo;
-	
+
 	@PostMapping("/newuser")
 	public User signUp(@RequestBody User newuser) {
 		userrepo.save(newuser);
 		return newuser;
 	}
-	
+
 	@PostMapping("/user")
 	public User logIn(@RequestBody User verifyuser) {
-		
+
 		User user = userrepo.findByUserEmail(verifyuser.getUserEmail());
-		if(user.getUserPassword().equals(verifyuser.getUserPassword())) {
+		if (user.getUserPassword().equals(verifyuser.getUserPassword())) {
 			return user;
 		}
 		return new User();
